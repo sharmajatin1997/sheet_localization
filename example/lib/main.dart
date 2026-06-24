@@ -7,7 +7,7 @@ void main() async {
   // Note: The sheet must be published to the web! (File -> Share -> Publish to Web)
   await SheetLocalization.init(
     // Using sheetId instead of csvUrl to bypass Google's 5-minute cache!
-    sheetId: '1FOHW-OG-HFay9lE9mC-8BXTsgMwPXw76lqyQ65CS_l0', 
+    sheetId: '1FOHW-OG-HFay9lE9mC-8BXTsgMwPXw76lqyQ65CS_l0',
     defaultLanguage: 'en',
     // Automatically checks for new text every 2 secs silently!
     autoRefreshInterval: const Duration(seconds: 2),
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(primarySwatch: Colors.blue),
           home: HomeScreen(), // Removed const here so it rebuilds!
         );
-      }
+      },
     );
   }
 }
@@ -70,10 +70,7 @@ class HomeScreen extends StatelessWidget {
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text('login_button'.tr),
-            ),
+            ElevatedButton(onPressed: () {}, child: Text('login_button'.tr)),
             const SizedBox(height: 40),
             const Padding(
               padding: EdgeInsets.all(16.0),

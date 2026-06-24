@@ -6,10 +6,12 @@ import 'sheet_localization_core.dart';
 class SheetLocalizationBuilder extends StatefulWidget {
   final Widget Function(BuildContext context) builder;
 
-  const SheetLocalizationBuilder({Key? key, required this.builder}) : super(key: key);
+  const SheetLocalizationBuilder({Key? key, required this.builder})
+    : super(key: key);
 
   @override
-  State<SheetLocalizationBuilder> createState() => _SheetLocalizationBuilderState();
+  State<SheetLocalizationBuilder> createState() =>
+      _SheetLocalizationBuilderState();
 }
 
 class _SheetLocalizationBuilderState extends State<SheetLocalizationBuilder> {

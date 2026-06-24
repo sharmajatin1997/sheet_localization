@@ -15,7 +15,7 @@ class SheetLocalization extends ChangeNotifier {
   // Maps Language Code (e.g., 'en') to a Map of keys and values.
   // {'en': {'welcome': 'Welcome', 'login': 'Login'}, 'hi': {'welcome': 'Swagat', ...}}
   Map<String, Map<String, String>> _translations = {};
-  
+
   String _currentLang = 'en';
   String _sheetId = '';
   String _sheetPageId = '0';
@@ -29,7 +29,7 @@ class SheetLocalization extends ChangeNotifier {
     if (_currentLang != lang) {
       _currentLang = lang;
       notifyListeners();
-      
+
       // Save user preference
       SharedPreferences.getInstance().then((prefs) {
         prefs.setString('sheet_loc_current_lang', lang);
@@ -60,7 +60,7 @@ class SheetLocalization extends ChangeNotifier {
     _instance._pollingTimer?.cancel();
 
     final prefs = await SharedPreferences.getInstance();
-    
+
     // Check if user previously selected a language
     final savedLang = prefs.getString('sheet_loc_current_lang');
     if (savedLang != null) {
@@ -93,7 +93,7 @@ class SheetLocalization extends ChangeNotifier {
     if (langMap != null && langMap.containsKey(key)) {
       return langMap[key]!;
     }
-    
+
     // Fallback to English if key not found in current language
     if (_currentLang != 'en' && _translations.containsKey('en')) {
       final enMap = _translations['en'];
@@ -101,7 +101,7 @@ class SheetLocalization extends ChangeNotifier {
         return enMap[key]!;
       }
     }
-    
+
     // Return key itself if not found anywhere
     return key;
   }
@@ -124,14 +124,14 @@ class SheetLocalization extends ChangeNotifier {
   Future<void> _fetchFromGoogleSheet(SharedPreferences prefs) async {
     if (_sheetId.isEmpty && _csvUrl.isEmpty) return;
 
-    final urlStr = _csvUrl.isNotEmpty 
-        ? _csvUrl 
+    final urlStr = _csvUrl.isNotEmpty
+        ? _csvUrl
         : 'https://docs.google.com/spreadsheets/d/$_sheetId/export?format=csv&id=$_sheetId&gid=$_sheetPageId';
     final url = Uri.parse(urlStr);
 
     try {
       final response = await http.get(url);
-      
+
       if (response.statusCode == 200) {
         // Parse CSV
         // We decode as utf8 to support all languages correctly
@@ -142,7 +142,7 @@ class SheetLocalization extends ChangeNotifier {
 
         // Extract Headers: [key, en, hi, fr, ...]
         final headers = csvTable[0].map((e) => e.toString().trim()).toList();
-        
+
         // Find index of 'key' column
         final keyIndex = headers.indexOf('key');
         if (keyIndex == -1) {
@@ -162,7 +162,7 @@ class SheetLocalization extends ChangeNotifier {
         for (int i = 1; i < csvTable.length; i++) {
           final row = csvTable[i];
           if (row.length <= keyIndex) continue;
-          
+
           final String translationKey = row[keyIndex].toString().trim();
           if (translationKey.isEmpty) continue;
 
@@ -178,17 +178,19 @@ class SheetLocalization extends ChangeNotifier {
         }
 
         // Update translations and notify if changed
-        bool hasChanges = jsonEncode(_translations) != jsonEncode(newTranslations);
-        
+        bool hasChanges =
+            jsonEncode(_translations) != jsonEncode(newTranslations);
+
         if (hasChanges) {
           _translations = newTranslations;
           await prefs.setString('sheet_loc_data', jsonEncode(_translations));
           notifyListeners();
           debugPrint('SheetLocalization: Translations updated successfully!');
         }
-
       } else {
-        debugPrint('SheetLocalization: Failed to fetch from Google Sheets. Status: ${response.statusCode}');
+        debugPrint(
+          'SheetLocalization: Failed to fetch from Google Sheets. Status: ${response.statusCode}',
+        );
       }
     } catch (e) {
       debugPrint('SheetLocalization: Network error fetching translations: $e');
